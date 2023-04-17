@@ -8,12 +8,12 @@ function ChatBody({
 	return (
 		<section className="body__container">
 			<div className="message__container">
-				{messages.map((message) => (
+				{messages.map((message, index) => (
 					<Message
 						message={message}
 						currentUser={currentUser}
 						selectedChat={selectedChat}
-						key={message.timestamp}
+						key={index}
 					/>
 				))}
 				<div ref={lastMessageRef} />
