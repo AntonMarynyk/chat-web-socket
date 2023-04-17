@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import User from './User';
 
-function SideBar({ users, selectedChat, setSelectedChat }) {
+function SideBar({ users, currentUser, selectedChat, setSelectedChat }) {
 	const [isOnline, setIsOnline] = useState(false);
 	const [searchString, setSearchString] = useState('');
 	const [userList, setUserList] = useState(users);
 
 	useEffect(() => {
-		const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchString));
+		const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchString) && user.id !== currentUser.id);
 		if (isOnline) {
 			setUserList(filteredUsers.filter((user) => user.status === 'online'));
 		} else {
 			setUserList(filteredUsers);
 		}
-	}, [users, searchString, isOnline]);
+	}, [users, searchString, currentUser, isOnline]);
 
 	return (
 		<aside className="sidebar__container">

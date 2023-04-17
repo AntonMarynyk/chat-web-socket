@@ -34,7 +34,7 @@ function ChatBodyFooter({
 		} else {
 			setTypingStatus('');
 		}
-	}, [typingUsers, selectedChat]);
+	}, [typingUsers, selectedChat, currentUser]);
 
 	const handleSendMessage = (e) => {
 		e.preventDefault();
