@@ -72,7 +72,10 @@ const BOTS = [
     handleMessage: (data) => {
       const { from, to, text } = data
       const reverseText = text.split('').reverse().join('')
-      messages.push({ ...data, text: reverseText, to: from, from: to })
+      setTimeout(() => {
+        messages.push({ ...data, text: reverseText, to: from, from: to })
+        io.emit('messageResponse', messages)
+      }, 3000)
     }
   },
   {

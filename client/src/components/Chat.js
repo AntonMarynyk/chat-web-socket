@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ChatHeader from './ChatHeader';
 import ChatBody from './ChatBody';
 import SideBar from './SideBar';
-import "./style.css"
+import './style.css';
 
 function Chat({ socket }) {
 	const [currentChatMessages, setCurrentChatMessages] = useState([]);
@@ -13,9 +13,9 @@ function Chat({ socket }) {
 	const [allUserList, setAllUserList] = useState([]);
 	const lastMessageRef = useRef(null);
 
-	useEffect(()=>{
+	useEffect(() => {
 		socket.on('userList', (users) => {
-			setAllUserList(users);
+			setAllUserList(users); 
 		});
 
 		socket.on('messageResponse', (messageList) => {
@@ -31,7 +31,7 @@ function Chat({ socket }) {
 		});
 
 		socket.on('typingResponse', (data) => setTypingUsers(data));
-	}, [socket])
+	}, [socket]);
 
 	useEffect(() => {
 		const userData = JSON.parse(localStorage.getItem('userData'));
@@ -48,12 +48,12 @@ function Chat({ socket }) {
 	useEffect(() => {
 		const newMessageList = allMessages.filter((message) => (message.from === currentUser.id && message.to === selectedChat.id) || (message.to === currentUser.id && message.from === selectedChat.id));
 		setCurrentChatMessages(newMessageList);
-		lastMessageRef.current?.scrollIntoView({block: "center", behavior: "auto"});
+		lastMessageRef.current?.scrollIntoView({ block: 'center', behavior: 'auto' });
 	}, [selectedChat, allMessages]);
 
 	return (
-		<div className={"chat__container"}>
-			{!!Object.keys(selectedChat).length ? <ChatHeader selectedChat={selectedChat}/> : <></> }
+		<div className="chat__container">
+			{!!Object.keys(selectedChat).length && <ChatHeader selectedChat={selectedChat} /> }
 			<ChatBody socket={socket} typingUsers={typingUsers} lastMessageRef={lastMessageRef} messages={currentChatMessages} currentUser={currentUser} selectedChat={selectedChat} />
 			<SideBar users={allUserList} selectedChat={selectedChat} setSelectedChat={setSelectedChat} />
 		</div>
