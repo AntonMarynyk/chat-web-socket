@@ -31,7 +31,8 @@ function subscribeSpamBot (currentUser) {
     const from = BOTS[2].id
     const to = currentUser.id
     const text = 'SPAM BOT MESSAGE'
-    messages.push({ from, to, text })
+    const timestamp = new Date()
+    messages.push({ from, to, text, timestamp })
     io.emit('messageResponse', messages)
 
     subscribeSpamBot(currentUser)
@@ -41,15 +42,12 @@ function subscribeSpamBot (currentUser) {
 function checkUserExistence (currentUser, socket) {
   const userIndex = users.findIndex((user) => user.id === currentUser.id)
 
-  console.log(userIndex)
-
   if (userIndex === -1) {
     users.push(currentUser)
     subscribeSpamBot(currentUser)
   } else {
     users[userIndex] = { ...users[userIndex], status: 'online', socketId: socket.id }
   }
-  console.log(users)
 }
 
 app.use(cors())
@@ -72,10 +70,9 @@ const BOTS = [
     description: DEFAULT_DESCRIPTION,
     status: 'online',
     handleMessage: (data) => {
-      console.log('gsagasgsa')
       const { from, to, text } = data
       const reverseText = text.split('').reverse().join('')
-      messages.push({ text: reverseText, to: from, from: to })
+      messages.push({ ...data, text: reverseText, to: from, from: to })
     }
   },
   {
@@ -97,12 +94,12 @@ const BOTS = [
 ]
 const users = []
 const messages = []
+let typingUsers = []
 
 io.on('connection', (socket) => {
   console.log(`${socket.id} user just connected!`)
 
   socket.on('generateNewUser', (data) => {
-    console.log(data)
     const currentUser = {
       id: randomId(),
       name: `User${socket.id.slice(0, 4)}`,
@@ -140,19 +137,28 @@ io.on('connection', (socket) => {
     io.emit('messageList', messages)
   })
 
-  socket.on('typing', data => {
-    socket.broadcast.emit('typingResponse', data)
+  socket.on('typing', typingUser => {
+    const isUserTyping = typingUsers.some((user) => user.id === typingUser.id)
+
+    if (!isUserTyping) {
+      typingUsers.push(typingUser)
+    }
+
+    socket.broadcast.emit('typingResponse', typingUsers)
+  })
+
+  socket.on('stopTyping', stoppedUser => {
+    typingUsers = typingUsers.filter((user) => user.id !== stoppedUser.id)
+
+    socket.broadcast.emit('typingResponse', typingUsers)
   })
 
   socket.on('disconnect', () => {
-    console.log({ users, socketId: socket.id })
     const disconnectedUserIndex = users.findIndex(user => user.socketId === socket.id)
-    console.log(disconnectedUserIndex)
     if (disconnectedUserIndex !== -1) {
       users[disconnectedUserIndex].status = 'offline'
     }
     io.emit('userList', [...BOTS, ...users])
-    console.log(users)
     socket.disconnect()
   })
 })

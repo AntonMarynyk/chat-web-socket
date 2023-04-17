@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import socketIO from 'socket.io-client';
 import Chat from './Chat';
 
