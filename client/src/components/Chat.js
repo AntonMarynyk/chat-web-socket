@@ -28,6 +28,7 @@ function Chat({ socket }) {
 
 		socket.on('userGenerated', (currentUserData) => {
 			setCurrentUser(currentUserData);
+			localStorage.setItem("userData", JSON.stringify(currentUserData))
 		});
 
 		socket.on('typingResponse', (data) => setTypingUsers(data));
@@ -35,7 +36,7 @@ function Chat({ socket }) {
 		const userData = JSON.parse(localStorage.getItem('userData'));
 		if (userData) {
 			socket.emit('checkUserExistence', userData);
-			setCurrentUser(userData);
+			// setCurrentUser(userData);
 		} else {
 			socket.emit('generateNewUser', {});
 		}
@@ -45,8 +46,8 @@ function Chat({ socket }) {
 
 	useEffect(() => {
 		const newMessageList = allMessages.filter((message) =>
-			(message.from === currentUser.id && message.to === selectedChat.id) ||
-			(message.to === currentUser.id && message.from === selectedChat.id)
+			(message.from === currentUser?.id && message.to === selectedChat?.id) ||
+			(message.to === currentUser?.id && message.from === selectedChat?.id)
 		);
 		setCurrentChatMessages(newMessageList);
 		lastMessageRef.current?.scrollIntoView({ block: 'center', behavior: 'auto' });

@@ -2,9 +2,7 @@ import React from 'react';
 import Message from './Message';
 import ChatBodyFooter from './ChatBodyFooter';
 
-function ChatBody({
-	socket, typingUsers, lastMessageRef, messages, currentUser, selectedChat,
-}) {
+function ChatBody({socket, typingUsers, lastMessageRef, messages, currentUser, selectedChat}) {
 	return (
 		<section className="body__container">
 			<div className="message__container">

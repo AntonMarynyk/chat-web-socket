@@ -45,9 +45,12 @@ function checkUserExistence (currentUser, socket) {
   if (userIndex === -1) {
     users.push(currentUser)
     subscribeSpamBot(currentUser)
+    return currentUser
   } else {
     users[userIndex] = { ...users[userIndex], status: 'online', socketId: socket.id }
   }
+
+  return users[userIndex]
 }
 
 app.use(cors())
@@ -100,8 +103,6 @@ const messages = []
 let typingUsers = []
 
 io.on('connection', (socket) => {
-  console.log(`${socket.id} user just connected!`)
-
   socket.on('generateNewUser', (data) => {
     const currentUser = {
       id: randomId(),
@@ -112,17 +113,17 @@ io.on('connection', (socket) => {
       socketId: socket.id
     }
 
-    checkUserExistence(currentUser, socket)
-
+    users.push(currentUser)
     io.emit('userList', [...BOTS, ...users])
-    io.emit('userGenerated', currentUser)
+    socket.emit('userGenerated', currentUser)
   })
 
   socket.on('checkUserExistence', (currentUser) => {
     currentUser.socketId = socket.id
     currentUser.status = 'online'
-    checkUserExistence(currentUser, socket)
+    const newCurrentUser = checkUserExistence(currentUser, socket)
 
+    socket.emit('userGenerated', newCurrentUser)
     io.emit('userList', [...BOTS, ...users])
   })
 
