@@ -7,7 +7,7 @@ function SideBar({ users, currentUser, selectedChat, setSelectedChat }) {
 	const [userList, setUserList] = useState(users);
 
 	useEffect(() => {
-		const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchString) && user.id !== currentUser.id);
+		const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchString.toLowerCase()) && user.id !== currentUser.id);
 		if (isOnline) {
 			setUserList(filteredUsers.filter((user) => user.status === 'online'));
 		} else {
