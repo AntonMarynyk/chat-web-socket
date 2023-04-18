@@ -4,7 +4,7 @@ import ChatBodyFooter from './ChatBodyFooter';
 
 function ChatBody({socket, typingUsers, lastMessageRef, messages, currentUser, selectedChat}) {
 	return (
-		<section className="body__container">
+		<main className="body__container">
 			<div className="message__container">
 				{messages.map((message, index) => (
 					<Message
@@ -23,7 +23,7 @@ function ChatBody({socket, typingUsers, lastMessageRef, messages, currentUser, s
 				currentUser={currentUser}
 				typingUsers={typingUsers}
 			/>
-		</section>
+		</main>
 	);
 }
 
