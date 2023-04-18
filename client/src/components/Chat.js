@@ -36,7 +36,6 @@ function Chat({ socket }) {
 		const userData = JSON.parse(localStorage.getItem('userData'));
 		if (userData) {
 			socket.emit('checkUserExistence', userData);
-			// setCurrentUser(userData);
 		} else {
 			socket.emit('generateNewUser', {});
 		}
